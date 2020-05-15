@@ -1,0 +1,77 @@
+{% extends "account/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Board
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <a href="{% url 'bp_manager:create_process'%}?id={{ task.id }}" class="btn btn-primary">Создать Бизнесс процесс</a>
+                <a href="{% url 'bp_manager:create_team'%}?id={{ task.id }}" class="btn btn-primary">Создать команду</a>
+                <a href="{% url 'task_manager:create_task'%}?id={{ task.id }}" class="btn btn-primary">Создать задачу</a>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <h2>Команды</h2>
+                {% for team in board.team_set %}
+                    <div class="card">
+                        <div class="card-header">
+                            {{ team.name }}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Managers: {% for man in team.managers_set %}
+                                {{ man.username }} + |
+                            {% endfor %}</p>
+                            <p class="card-text">Workers: {% for worker in team.workers_set %}
+                                {{ worker.username }} + |
+                            {% endfor %}</p>
+                                <a href="{% url 'bp_manager:update_team' pk=team.id%}" class="btn btn-primary">Изменить</a>
+                                <a href="{% url 'bp_manager:delete_team' pk=team.id%}" class="btn btn-primary">Удалить</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h2>Процессы</h2>
+                {% for process in board.process_set %}
+                    <div class="card">
+                        <div class="card-header">
+                            {{ process.name }}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ process.status }}</p>
+                            <hr>
+                            Tasks: {% for task in process.task_set %}
+                                <div class="card">
+                                    <div class="card-header">
+                                        {{ task.name }}
+                                    </div>
+                                    <div class="card-body">
+                                <p class="card-text">Description: {{task.description}}</p>
+                                <p class="card-text">Status: {{task.status}}</p>
+                                <p class="card-text">Deadline: {{task.deadline}}</p>
+                                <p class="card-text">Process: {{process.name}}</p>
+                                {% if task.status == 'OPEN' %}
+                                    <a href="{% url 'task_manager:update_task' pk=task.id %}" class="btn btn-primary">Изменить</a>
+                                    <a href="{% url 'task_manager:delete_task' pk=team.id%}" class="btn btn-primary">Удалить</a>
+                                {% endif %}
+                                </div>
+                                </div>
+                            {% endfor %}
+                            <hr>
+                            <a href="{% url 'bp_manager:update_process' pk=process.id%}" class="btn btn-primary">Изменить</a>
+                            <a href="{% url 'bp_manager:delete_process' pk=team.id%}" class="btn btn-primary">Удалить</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

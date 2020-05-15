@@ -1,0 +1,33 @@
+{% extends "account/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Board
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% for process in board.process_set %}
+                    {% for task in process.task_set %}
+                        <div class="card">
+                            <div class="card-header">
+                                {{ task.name }}
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Description: {{task.description}}</p>
+                                <p class="card-text">Status: {{task.status}}</p>
+                                <p class="card-text">Deadline: {{task.deadline}}</p>
+                                {% if task.status == 'OPEN' %}
+                                    <a href="{% url 'task_manager:start_task'%}?id={{ task.id }}" class="btn btn-primary">Занять</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
