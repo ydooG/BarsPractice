@@ -1,4 +1,6 @@
 from django.urls import path
+
+from account.decorators import manager_perm_required
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -12,4 +14,5 @@ urlpatterns = [
     path('create-room/', views.create_room, name='create_room'),
     path('profile/', views.profile, name='profile'),
     path('add-staff/', views.add_staff, name='add_staff'),
+    path('delete/<int:pk>', manager_perm_required(views.UserDelete.as_view()), name='delete_user'),
 ]

@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_POST
+from django.views.generic import DeleteView
 
 from account.decorators import manager_perm_required
 from account.forms import UserRegistrationForm, LoginForm, RoomForm, AddStaffToRoomForm
-from account.models import Room
+from account.models import Room, CustomUser
 
 
 def register(request):
@@ -90,11 +91,14 @@ def profile(request):
                        'form': form})
     else:
         new_room = user.room
-        staff = new_room.users.all()
-        return render(request, 'account/room.html',
-                      {'user': user,
-                       'room': new_room,
-                       'staff': staff})
+        if new_room:
+            staff = new_room.users.all()
+            return render(request, 'account/room.html',
+                          {'user': user,
+                           'room': new_room,
+                           'staff': staff})
+        else:
+            return HttpResponse('Вы не состоите ни в одной комнате, обратитесь к менеджеру')
 
 
 @require_POST
@@ -112,4 +116,16 @@ def add_staff(request):
     else:
         return HttpResponse('some error')
 
+
+class UserDelete(DeleteView):
+    model = CustomUser
+    success_url = reverse_lazy('account:profile')
+    context_object_name = 'usr'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.room = None
+        self.object.save()
+        return HttpResponseRedirect(success_url)
 

@@ -1,6 +1,10 @@
 {% extends 'account/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block head %}
+    {{ form.media.css }}
+{% endblock %}
+
 {% block title %}
     {{ user.username }}
 {% endblock %}
@@ -26,7 +30,9 @@
                     <td>{{ u.username }}</td>
                     <td>{{ u.first_name }}</td>
                     <td>{{ u.last_name }}</td>
-                    <td>{{ u.role }}</td>
+                    <td>{{ u.role }} {% if request.user.is_manager %}
+                        <a href="{% url 'account:delete_user' u.id %}">X</a>
+                    {% endif %}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -40,4 +46,8 @@
     {{ form.staff.errors }}
 
     </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    {{ form.media.js }}
 {% endblock %}
