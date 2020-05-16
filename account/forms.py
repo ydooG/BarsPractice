@@ -1,12 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from django.db.models import Q
+from django_select2 import forms as s2forms
 
 from account.models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
-    position = forms.ChoiceField(required=True, choices=CustomUser.ROLE_CHOICES)
+    role = forms.ChoiceField(required=True, choices=CustomUser.ROLE_CHOICES)
 
     class Meta(UserCreationForm):
         model = CustomUser
@@ -14,7 +15,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-    position = forms.ChoiceField(required=True, choices=CustomUser.ROLE_CHOICES)
+    role = forms.ChoiceField(required=True, choices=CustomUser.ROLE_CHOICES)
 
     class Meta:
         model = CustomUser
@@ -22,7 +23,7 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class UserRegistrationForm(forms.ModelForm):
-    position = forms.ChoiceField(required=True, choices=CustomUser.ROLE_CHOICES)
+    role = forms.ChoiceField(required=True, choices=CustomUser.ROLE_CHOICES)
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
 
@@ -45,7 +46,8 @@ class LoginForm(forms.Form):
 class RoomForm(forms.Form):
     title = forms.CharField()
     staff = forms.ModelMultipleChoiceField(
-        queryset=CustomUser.objects.filter((~Q(role=CustomUser.MANAGER)) & Q(room=None) & (~Q(role=None))))
+        queryset=CustomUser.objects.filter((~Q(role=CustomUser.MANAGER)) & Q(room=None) & (~Q(role=None))),
+        widget=s2forms.Select2MultipleWidget)
 
     # def clean(self):
     #     raise forms.ValidationError('Something went wrong')
@@ -53,4 +55,5 @@ class RoomForm(forms.Form):
 
 class AddStaffToRoomForm(forms.Form):
     staff = forms.ModelMultipleChoiceField(
-        queryset=CustomUser.objects.filter((~Q(role=CustomUser.MANAGER)) & Q(room=None) & (~Q(role=None))))
+        queryset=CustomUser.objects.filter((~Q(role=CustomUser.MANAGER)) & Q(room=None) & (~Q(role=None))),
+        widget=s2forms.Select2MultipleWidget)

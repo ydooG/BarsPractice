@@ -8,4 +8,5 @@ urlpatterns = [
     path('task_manager/', include('task_manager.urls', namespace='task_manager')),
     path('bp_manager/', include('bp_manager.urls', namespace='bp_manager')),
     path('admin/', admin.site.urls),
+    path('select2/', include('django_select2.urls')),
 ]
