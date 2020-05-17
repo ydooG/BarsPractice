@@ -1,21 +1,28 @@
 {% extends 'account/base.html' %}
 {% load crispy_forms_tags %}
-
 {% block title %}
     {{ user.username }}
 {% endblock %}
 
-{% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-10">{{ user.username }}</div>
-            <div class="col"><a href="{% url 'account:logout' %}">Выйти</a></div>
-        </div>
-        <div class="row"><h1>Ваш логин: {{ user.username }}</h1></div>
-        <div class="row"><h1>{{ room.title }}</h1></div>
-        <p>Менеджер комнаты: {{ room.author.last_name }} {{ room.author.first_name }}</p>
+{% block head %}
+    {{ form.media.css }}
+{% endblock %}
 
-        <div class="row">
+{% block content %}
+
+    <div class="row">
+        {% if request.user.is_manager %}
+            <h1>Ваша комната: {{ room.title }}</h1>
+        {% else %}
+            <div class="row">
+                <h1>{{ room.title }}</h1>
+            </div>
+            <p>Менеджер комнаты:</p>
+            <a href=""> {{ room.author.last_name }} {{ room.author.first_name }}</a>
+        {% endif %}
+    </div>
+
+    <div class="row">
         <h1>Сотрудники</h1>
         <table class="table">
             <tr>
@@ -26,15 +33,35 @@
             </tr>
             {% for u in staff %}
                 <tr>
-                    <td>{{ u.username }}</td>
+                    <td>
+                        <a href="{% url 'account:profile' u.username %}">
+                            {{ u.username }}
+                        </a>
+                    </td>
                     <td>{{ u.first_name }}</td>
                     <td>{{ u.last_name }}</td>
-                    <td>{{ u.role }}</td>
+                    <td>{{ u.get_role_display }}
+                        {% if request.user.is_manager %}
+                            <a href="{% url 'account:delete_user' u.id %}">X</a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </table>
-
-        </div>
-
+        {% if request.user.is_manager %}
+            <div style="width: 200px">
+                <form action="{% url 'account:add_staff' %}" method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success">Добавить</button>
+                </form>
+                {{ form.non_field_errors }}
+                {{ form.staff.errors }}
+                <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+                        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+                        crossorigin="anonymous"></script>
+                {{ form.media.js }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

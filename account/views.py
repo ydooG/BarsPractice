@@ -4,11 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_POST
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, DetailView
 
 from account.decorators import manager_perm_required
 from account.forms import UserRegistrationForm, LoginForm, RoomForm, AddStaffToRoomForm
 from account.models import Room, CustomUser
+
+
+def root(request):
+    return render(request, 'account/root.html')
 
 
 def register(request):
@@ -37,12 +41,12 @@ def user_login(request):
                     login(request, user)
                     if user.is_manager():
                         if Room.objects.filter(author=user):
-                            return redirect(reverse('account:profile'))
+                            return redirect(reverse('account:profile', args={'me'}))
                         else:
                             return redirect(reverse('account:create_room'))
                     else:
                         print(user.username)
-                        return redirect(reverse_lazy('account:profile'))
+                        return redirect(reverse_lazy('account:profile', args={'me'}))
                 else:
                     return HttpResponse('аккаунт неактивен')
             else:
@@ -68,7 +72,7 @@ def create_room(request):
                 room = Room.objects.create(title=title, author=request.user)
                 staff.update(room=room)
                 # redirect room
-                return redirect(reverse('account:profile'))
+                return redirect(reverse('account:profile', args={'me'}))
         else:
             return HttpResponse('дурак ты')
     else:
@@ -78,15 +82,15 @@ def create_room(request):
 
 
 @login_required
-def profile(request):
+def room(request):
     user = request.user
     if user.is_manager():
-        room = Room.objects.get(author=user)
-        staff = room.users.all()
+        curr_room = Room.objects.get(author=user)
+        staff = curr_room.users.all()
         form = AddStaffToRoomForm()
-        return render(request, 'account/manager_profile.html',
+        return render(request, 'account/room.html',
                       {'user': user,
-                       'room': room,
+                       'room': curr_room,
                        'staff': staff,
                        'form': form})
     else:
@@ -112,14 +116,14 @@ def add_staff(request):
         staff = cd['staff']
         room = Room.objects.get(author=user)
         staff.update(room=room)
-        return redirect(reverse('account:profile'))
+        return redirect(reverse('account:room'))
     else:
         return HttpResponse('some error')
 
 
 class UserDelete(DeleteView):
     model = CustomUser
-    success_url = reverse_lazy('account:profile')
+    success_url = reverse_lazy('account:room')
     context_object_name = 'usr'
 
     def delete(self, request, *args, **kwargs):
@@ -128,4 +132,16 @@ class UserDelete(DeleteView):
         self.object.room = None
         self.object.save()
         return HttpResponseRedirect(success_url)
+
+
+class ProfileView(DetailView):
+    model = CustomUser
+    context_object_name = 'user'
+    template_name = 'account/profile.html'
+
+    def get_object(self, queryset=None):
+        curr_username = self.kwargs['username']
+        if curr_username == 'me':
+            return self.request.user
+        return CustomUser.objects.get(username=curr_username)
 
