@@ -1,5 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -96,3 +98,15 @@ class StartTask(LoginRequiredMixin, UserPassesTestMixin, RedirectView):
         else:
             pattern_name = reverse_lazy('task_manager:board_view')
         return super().get_redirect_url(*args, **kwargs)
+
+
+@login_required
+def task_list(request, username):
+    if username == 'me':
+        cur_user = request.user
+    else:
+        cur_user = get_object_or_404(CustomUser, username=username)
+    tasks = Task.objects.filter(executor=cur_user, status=Task.IN_PROGRESS)
+    return render(request, 'task_manager/task_list.html',
+                  {'usr': cur_user,
+                   'tasks': tasks, })

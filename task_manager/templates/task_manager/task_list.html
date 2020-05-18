@@ -1,0 +1,21 @@
+{% extends 'account/base.html' %}
+
+{% block title %}
+    Список заданий {{ usr.username }}
+{% endblock %}
+
+{% block content %}
+    <h2>{{ usr.username }}</h2>
+    <span>Количество задач: {{ tasks|length }}</span>
+    <br>
+    <div>
+        {% for task in tasks %}
+            <i>{{ forloop.counter }}</i> Название: {{ task.name }}
+            <br>
+            Описание: {{ task.description }}
+            <br>
+            Дедлайн: {{ task.deadline }}
+        {% endfor %}
+
+    </div>
+{% endblock %}

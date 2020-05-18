@@ -153,7 +153,7 @@ class BoardDetail(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         if self.request.user.room is None:
-            return redirect(reverse_lazy('account:profile'))
+            return redirect(reverse_lazy('account:profile', args={'me'}))
         elif not self.request.user.is_manager():
             self.template_name = 'bp_manager/board_detail_stuff.html'
         return super().get(request, *args, **kwargs)
