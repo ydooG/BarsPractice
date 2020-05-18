@@ -1,0 +1,15 @@
+{% extends 'account/base.html' %}
+
+{% block title %}
+    Репозиторий
+{% endblock %}
+
+{% block content %}
+    <div class="centered-form">
+        <div class="centered-text">
+            <h1>Repository</h1>
+            <p>Name: {{ repository.name }}</p><br>
+            <p>Link: {{ repository.url }}</p>
+        </div>
+    </div>
+{% endblock %}

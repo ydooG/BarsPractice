@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 
 from account.managers import CustomUserManager
+from vcs.models import Repository
 
 
 class CustomUser(AbstractUser):
@@ -44,6 +45,12 @@ class CustomUser(AbstractUser):
 
 class Room(models.Model):
     title = models.CharField(max_length=50)
+    repository = models.OneToOneField(Repository,
+                                      related_name='room',
+                                      on_delete=models.SET_NULL,
+                                      blank=True,
+                                      null=True)
+
     author = models.OneToOneField(CustomUser,
                                   on_delete=models.CASCADE,
                                   related_name='my_room',
@@ -52,5 +59,5 @@ class Room(models.Model):
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
-        return reverse('music:singer_detail', args=[self.id, ])
+    # def get_absolute_url(self):
+    #     return reverse('music:singer_detail', args=[self.id, ])

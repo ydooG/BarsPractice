@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, FormView
 
+from account.models import CustomUser
 from chat.forms import ChatForm
 from chat.models import Chat, Message
 
@@ -26,7 +27,7 @@ class ChatView(ChatAccessMixin, TemplateView):
         chat_id = self.kwargs['id']
         context['chat_id'] = chat_id
 
-        messages = Message.objects.filter(chat_id=chat_id)
+        messages = reversed(Message.objects.filter(chat_id=chat_id).order_by('-pub_date')[:15])
         context['messages'] = messages
 
         chat = Chat.objects.get(id=chat_id)
@@ -54,4 +55,21 @@ class CreateChatView(FormView):
         chat.save()
 
         return HttpResponseRedirect(reverse('chat:chat_list'))
+
+
+class ChatMembersView(ListView):
+    model = CustomUser
+    template_name = 'chat/chat_members.html'
+    context_object_name = 'members'
+
+    def get_queryset(self):
+        chat_id = self.kwargs['id']
+        chat = Chat.objects.get(id=chat_id)
+        return chat.members.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        chat_id = self.kwargs['id']
+        context['chat'] = Chat.objects.get(id=chat_id)
+        return context
 

@@ -71,10 +71,9 @@ def create_room(request):
                 staff = cd['staff']
                 room = Room.objects.create(title=title, author=request.user)
                 staff.update(room=room)
-                # redirect room
                 return redirect(reverse('account:profile', args={'me'}))
         else:
-            return HttpResponse('дурак ты')
+            return HttpResponse('Введенные данные неверны')
     else:
         form = RoomForm()
         return render(request, 'account/room_create.html',
@@ -125,6 +124,7 @@ class UserDelete(DeleteView):
     model = CustomUser
     success_url = reverse_lazy('account:room')
     context_object_name = 'usr'
+    template_name = 'account/custom_user_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

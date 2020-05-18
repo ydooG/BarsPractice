@@ -1,0 +1,20 @@
+{% extends 'account/base.html' %}
+{% block title %}
+    Chat members
+{% endblock %}
+
+{% block content %}
+    <div class="centered-form">
+        <div class="centered-text">
+            <h1>Chat Members</h1>
+        </div>
+        <ul>
+            {% for user in members %}
+                <li><a href="{% url 'account:profile' user.username %}"><h5>{{ user.username }}</h5></a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="centered-text">
+        <button class="btn btn-secondary" onclick="location.href='{% url 'chat:chat' chat.id %}'">Назад</button>
+    </div>
+{% endblock %}

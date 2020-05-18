@@ -10,17 +10,20 @@
 
 {% block content %}
 
-    <div class="row">
-        {% if request.user.is_manager %}
+    {% if request.user.is_manager %}
+        <div class="row">
             <h1>Ваша комната: {{ room.title }}</h1>
-        {% else %}
-            <div class="row">
-                <h1>{{ room.title }}</h1>
-            </div>
-            <p>Менеджер комнаты:</p>
-            <a href=""> {{ room.author.last_name }} {{ room.author.first_name }}</a>
-        {% endif %}
-    </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <h1>{{ room.title }}</h1>
+        </div>
+        <p>Менеджер комнаты:
+            <a href="{% url 'account:profile' room.author.username %}">
+                {{ room.author.last_name }} {{ room.author.first_name }}
+            </a>
+        </p>
+    {% endif %}
 
     <div class="row">
         <h1>Сотрудники</h1>

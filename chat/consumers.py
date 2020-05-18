@@ -32,16 +32,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = json_data['message']
         username = json_data['username']
 
-        # user = await database_sync_to_async(CustomUser.objects.get)(username=username)
-        # chat = await database_sync_to_async(Chat.objects.get)(id=self.room_name)
-        # message_content = await database_sync_to_async(MessageContent.objects.create)(text=message)
-        # message_object = await database_sync_to_async(Message.objects.create)(chat=chat,
-        #                                                                       author=user,
-        #                                                                       content=message_content)
-        #
-        # time = message_object.time.strftime('%I:%M')
-        time = ""
+        user = await database_sync_to_async(CustomUser.objects.get)(username=username)
+        chat = await database_sync_to_async(Chat.objects.get)(id=self.room_name)
+        message_content = await database_sync_to_async(MessageContent.objects.create)(text=message)
+        message_object = await database_sync_to_async(Message.objects.create)(chat=chat,
+                                                                              author=user,
+                                                                              content=message_content)
 
+        time = message_object.pub_date.strftime('%r')
         # Send message to room group
         # Что отправить другим пользователям чата
         await self.channel_layer.group_send(

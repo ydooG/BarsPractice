@@ -5,7 +5,7 @@ from account.models import CustomUser
 
 class Chat(models.Model):
     name = models.CharField(max_length=64)
-    members = models.ManyToManyField(CustomUser)
+    members = models.ManyToManyField(CustomUser, related_name='chats', related_query_name='chats')
 
     def __str__(self):
         return self.name

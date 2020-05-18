@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'chat',
     'channels',
     'django_select2',
+    'vcs',
 ]
 
 MIDDLEWARE = [

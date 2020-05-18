@@ -49,9 +49,6 @@ class RoomForm(forms.Form):
         queryset=CustomUser.objects.filter((~Q(role=CustomUser.MANAGER)) & Q(room=None) & (~Q(role=None))),
         widget=s2forms.Select2MultipleWidget)
 
-    # def clean(self):
-    #     raise forms.ValidationError('Something went wrong')
-
 
 class AddStaffToRoomForm(forms.Form):
     staff = forms.ModelMultipleChoiceField(
