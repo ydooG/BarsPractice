@@ -7,9 +7,9 @@
 {% block content %}
     <div class="centered-form">
         <div class="centered-text">
-            <h1>Repository</h1>
-            <p>Name: {{ repository.name }}</p><br>
-            <p>Link: {{ repository.url }}</p>
+            <h3>Репозиторий</h3>
+            <p>Название: {{ repository.name }}</p>
+            <p>URL: <a target="_blank" href="{{ repository.url }}">{{ repository.url }}</a></p>
         </div>
     </div>
 {% endblock %}

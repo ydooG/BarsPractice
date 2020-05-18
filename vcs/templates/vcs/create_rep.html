@@ -5,6 +5,10 @@
     Зарегистрироваться
 {% endblock %}
 
+{% block head %}
+    {{ form.media.css }}
+{% endblock %}
+
 {% block content %}
     <div class="centered-form">
         <div class="row">
@@ -23,5 +27,6 @@
             </div>
         </div>
     </div>
+    {{ form.media.js }}
 
 {% endblock %}

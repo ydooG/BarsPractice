@@ -26,6 +26,16 @@
     {% endif %}
 
     <div class="row">
+        {% if room.repository%}
+            <a href="{% url 'vcs:rep' room.repository.id %}" class="btn btn-primary mr-2">Система контроля версий</a>
+        {% else %}
+            <a href="{% url 'vcs:create_rep' %}" class="btn btn-primary mr-2">Система контроля версий</a>
+        {% endif %}
+        <a href="" class="btn btn-primary mr-2">Бизнес процессы</a>
+        <a href="{% url 'bp_manager:board_view' %}" class="btn btn-primary mr-2">Таск Трэкер</a>
+    </div>
+
+    <div class="row">
         <h1>Сотрудники</h1>
         <table class="table">
             <tr>
