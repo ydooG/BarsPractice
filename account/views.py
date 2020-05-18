@@ -71,6 +71,8 @@ def create_room(request):
                 staff = cd['staff']
                 room = Room.objects.create(title=title, author=request.user)
                 staff.update(room=room)
+                user.room = room
+                user.save()
                 return redirect(reverse('account:profile', args={'me'}))
         else:
             return HttpResponse('Введенные данные неверны')
