@@ -1,7 +1,6 @@
 from django.db import models
 
-from bars import settings
-from account.models import *
+from account.models import CustomUser
 import datetime
 
 from bp_manager.models import Process

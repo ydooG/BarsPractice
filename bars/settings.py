@@ -38,13 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
-    'task_manager',
     'bp_manager',
     'crispy_forms',
     'chat',
     'channels',
     'django_select2',
     'vcs',
+    'task_manager',
 ]
 
 MIDDLEWARE = [

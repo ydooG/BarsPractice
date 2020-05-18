@@ -17,5 +17,5 @@ urlpatterns = [
     path('delete_team/', TeamDeleteView.as_view(), name='delete_team'),
     path('delete_board/', BoardDeleteView.as_view(), name='delete_board'),
     path('delete_process/', ProcessDeleteView.as_view(), name='delete_process'),
-    path('board/', BoardDetail.as_view(), name='board_view'),
+    path('board/<int:id>', BoardDetail.as_view(), name='board_view'),
 ]
